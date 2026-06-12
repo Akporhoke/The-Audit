@@ -1,0 +1,361 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.match-card {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+.snippet-text {
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #FFFFF0;
+  color: #9B6B43;
+  min-height: 100vh;
+  padding: 40px 16px;
+  overflow-x: hidden;
+}
+
+#intro{
+  margin-bottom:7rem;
+  background: #C98860;
+  text-align:center;
+  border-radius:1rem;
+  border:1rem solid #E6B58A;
+  
+}
+i{
+  border:#AB7543;
+  font-size:2rem;
+}
+
+#main{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+#main>h1{
+  text-align :center;
+  align-self:center;
+  justify-self: center;
+  color:#9B8943;
+}
+
+
+#ad{
+  margin-block:2rem;
+  display:flex;
+  align-self: cemter;
+  justify-self: center;
+}
+#ad>div>h1{
+  display:inline-block;
+  font-size:2.5rem;
+  align-self:justify;
+  letter-spacing: .5px;
+  margin-left:2rem ;
+
+}
+
+#image-detail{
+  display:flex;
+}
+
+#mini-card{
+  display:block;
+  height:4rem;
+  width:4rem;
+  border-radius:1rem;
+  background:#9B8943;
+  position:relative;
+  left: 0rem;
+  z-index:1;
+  bottom:2rem;
+  word-break: break-word;
+  overflow-x: visible;
+  font-size:3px;
+  color:white;
+  text-align:center;
+  padding: 3px;
+  font-family: italic;
+  margin:1rem;
+  
+}
+
+#red-circle{
+  display: block;
+  width:1.6rem;
+  height:1.6rem;
+  border-radius:50%;
+  background: #F0E7D5;
+  position:relative;
+  align-self: right;
+  left:3rem;
+}
+
+
+
+#ad-image{
+  width:8rem;
+  position: relative;
+  right:1.5rem;
+  border-radius:1rem;
+  
+}
+
+
+ #circle {
+  display: block;
+  background: #C4BCB0;
+  height: 23rem;
+  width: 23rem;
+  border-radius: 50%;
+  align-self: center;
+  justify-self: center;
+  position: relative;
+  overflow: hidden;
+  border:1px solid blue;
+  align-content: center;
+  justify-self :center;
+}
+
+#inner-circle{
+  display: block;
+  background:#2C365A;
+  width: 20rem;
+  height:20rem;
+  border-radius:50%;
+  align-self:center;
+  justify-self:center ;
+  position:relative;
+  border:1px solid #C4BCB0;
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+  
+}
+
+
+#saved{
+  display: block;
+  font-size:5rem;
+  color:white;
+  align-self: center;
+  justify-self: center;
+  transition: font-size .5s ease;
+}
+#saved:hover{
+  font-size:6rem;
+}
+
+#breakdown {
+  transition: all 0.3s ease;
+  bottom: 0;
+  z-index: 1;
+  position:relative;
+  transition:  1s ease-in-out;
+  z-index:1000;
+}
+
+#breakdown.open {
+  bottom: 0;
+  height: 60rem;
+  z-index: 1000;
+}
+
+
+.hidden{
+  display:none;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 0.92rem;
+  color: #718096;
+  margin-bottom: 24px;
+}
+
+/* ── Upload box ── */
+.upload-box {
+  position: relative;
+  background: #fff;
+  border: 2px dashed #cbd5e0;
+  border-radius: 12px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+.upload-box:hover { border-color: #4f46e5; }
+.upload-box input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+#uploadLabel {
+  font-size: 1rem;
+  color: #4a5568;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+/* ── Status ── */
+.status {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: none;
+}
+.status.info    { display: block; background: #ebf4ff; color: #2b6cb0; }
+.status.success { display: block; background: #f0fff4; color: #276749; }
+.status.error   { display: block; background: #fff5f5; color: #c53030; }
+
+/* ── Summary row ── */
+.summary-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.summary-card {
+  flex: 1;
+  min-width: 160px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border-top: 4px solid #4f46e5;
+}
+.summary-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #a0aec0;
+  display: block;
+  margin-bottom: 6px;
+}
+.summary-amount {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1a202c;
+  letter-spacing: -0.02em;
+}
+
+/* ── Category sections ── */
+.category-section { margin-bottom: 28px; }
+
+.category-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4f46e5;
+  margin-bottom: 10px;
+}
+
+/* ── Cards ── */
+.match-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  border-left: 4px solid #4f46e5;
+  margin-bottom: 10px;
+}
+.total-card {
+  border-left-color: #38a169;
+  background: #f0fff4;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.page-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.total-badge {
+  background: #38a169;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Amount display ── */
+.amount-display {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #276749;
+  letter-spacing: -0.02em;
+  margin: 4px 0 8px;
+}
+.amount-display.small {
+  font-size: 1.3rem;
+  color: #4f46e5;
+}
+
+.snippet-text {
+  font-size: 0.83rem;
+  color: #718096;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+mark {
+  background: #fefcbf;
+  color: #744210;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.no-total, .no-amount {
+  font-size: 0.85rem;
+  color: #e53e3e;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.sub-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 14px 0 6px;
+}

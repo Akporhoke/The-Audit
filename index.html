@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUDIT</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+
+  <header id="intro">
+    <div id="main"><i class="fa-solid fa-magnifying-glass-dollar"></i><h1>THE AUDIT</h1></div>
+  </header>
+
+  <div id="ad">
+    <div id="ad-text">
+      <h1>FINANCIAL TRACKING PLATFORM</h1>
+    </div>
+    <div id="image-detail">
+      <div id="mini-card">
+        <p>A budget is the bridge between your current income and your future wealth.</p>
+        <div id="red-circle"></div>
+      </div>
+      <img src="ad-image2.jpg" alt="image..." id="ad-image" />
+    </div>
+  </div>
+
+  <!-- Circle always visible, double-tap opens the overlay -->
+  <div id="circle-wrap">
+    <div id="circle">
+      <div id="inner-circle">
+        <strong><span id="saved"></span></strong>
+        <p><strong>Financial score</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-screen overlay: opens on double-tap -->
+  <section id="breakdown">
+    <div id="scoreBreakdownRow"></div>
+    <div id="categoryBreakdown" class="hidden"></div>
+    <div id="results" class="hidden"></div>
+  </section>
+
+  <div class="container">
+    <h1>GET YOUR FINANCIAL SCORE</h1>
+    <p class="subtitle"><strong>Please upload a PDF of your bank statement to receive your financial assessment.</strong>.</p>
+
+    <div class="upload-box" id="uploadBox">
+      <input type="file" id="pdfInput" accept=".pdf" />
+      <span id="uploadLabel">📄 Click to choose a PDF</span>
+    </div>
+
+    <div id="status"></div>
+    <div id="summary"></div>
+  </div>
+
+  <script src="categorizer.js"></script>
+  <script src="category-breakdown.js"></script>
+  <script src="https://kit.fontawesome.com/ebc2dac530.js" crossorigin="anonymous"></script>
+  <script src="search.js"></script>
+</body>
+</html>
