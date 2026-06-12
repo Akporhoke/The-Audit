@@ -54,17 +54,20 @@ i{
 
 
 #ad{
-  margin-block:2rem;
+
   display:flex;
-  align-self: cemter;
+  gap: 2rem;
+  align-self: center;
   justify-self: center;
+  align-items: center;
+  justify-content: center;
 }
 #ad>div>h1{
   display:inline-block;
   font-size:2.5rem;
   align-self:justify;
   letter-spacing: .5px;
-  margin-left:2rem ;
+  margin-left:0rem ;
 
 }
 
@@ -73,9 +76,11 @@ i{
 }
 
 #mini-card{
-  display:block;
-  height:4rem;
-  width:4rem;
+  display:none;
+  height:auto;
+  min-height: fit-content;
+  width:auto;
+  min-width: fit-content;
   border-radius:1rem;
   background:#9B8943;
   position:relative;
@@ -89,7 +94,6 @@ i{
   text-align:center;
   padding: 3px;
   font-family: italic;
-  margin:1rem;
   
 }
 
@@ -107,11 +111,15 @@ i{
 
 
 #ad-image{
-  width:8rem;
+  width:80rem;
+  max-width: 100%;
   position: relative;
-  right:1.5rem;
+  right:0;
   border-radius:1rem;
-  
+  margin-left :0;
+  transform: rotate(-15deg);
+  -webkit-mask-image: radial-gradient(circle, black 60%, transparent 100%);
+  mask-image: radial-gradient(circle, black 60%, transparent 100%);
 }
 
 
@@ -162,10 +170,9 @@ i{
 #breakdown {
   transition: all 0.3s ease;
   bottom: 0;
-  z-index: 1;
-  position:relative;
   transition:  1s ease-in-out;
-  z-index:1000;
+  height: auto;
+  min-height: fit-content;
 }
 
 #breakdown.open {
