@@ -1,0 +1,29 @@
+body {
+  transition: transform 1s ease;
+  transform-style: preserve-3d;
+  overflow-x: hidden;
+}
+
+/* Make logo clearly double-tappable */
+#main {
+  cursor: double-click;
+  position: relative;
+}
+
+/* Add a hint icon on hover */
+#main:hover::after {
+  content: '🔄 Double-tap to flip';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #E0B840;
+  color: #1e293b;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0.9;
+  pointer-events: none;
+}

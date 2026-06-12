@@ -26,103 +26,228 @@ body {
   overflow-x: hidden;
 }
 
-#intro{
-  margin-bottom:7rem;
-  background: #C98860;
-  text-align:center;
-  border-radius:1rem;
-  border:1rem solid #E6B58A;
-  
-}
-i{
-  border:#AB7543;
-  font-size:2rem;
+/* Main header container */
+header#intro {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #fff;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
 }
 
-#main{
+/* Main content wrapper */
+header#intro #main {
   display: flex;
-  align-content: center;
-  justify-content: center;
-}
-
-#main>h1{
-  text-align :center;
-  align-self:center;
-  justify-self: center;
-  color:#9B8943;
-}
-
-
-#ad{
-
-  display:flex;
-  gap: 2rem;
-  align-self: center;
-  justify-self: center;
   align-items: center;
   justify-content: center;
-}
-#ad>div>h1{
-  display:inline-block;
-  font-size:2.5rem;
-  align-self:justify;
-  letter-spacing: .5px;
-  margin-left:0rem ;
-
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-#image-detail{
-  display:flex;
+/* Icon styling */
+header#intro #main i {
+  font-size: 2.5rem;
+  color: #E0B840;
+  background: rgba(224, 184, 64, 0.15);
+  padding: 0.75rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(224, 184, 64, 0.3);
 }
 
-#mini-card{
-  display:none;
-  height:auto;
-  min-height: fit-content;
-  width:auto;
-  min-width: fit-content;
-  border-radius:1rem;
-  background:#9B8943;
-  position:relative;
-  left: 0rem;
-  z-index:1;
-  bottom:2rem;
-  word-break: break-word;
-  overflow-x: visible;
-  font-size:3px;
-  color:white;
-  text-align:center;
-  padding: 3px;
-  font-family: italic;
+/* Title styling */
+header#intro #main h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0;
+  background: linear-gradient(90deg, #fff 0%, #E0B840 50%, #fff 100%);
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Animated shine effect on text */
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Optional: subtle background pattern */
+header#intro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(224, 184, 64, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(57, 255, 20, 0.08) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  header#intro {
+    padding: 1.5rem 1rem;
+  }
   
+  header#intro #main i {
+    font-size: 2rem;
+    padding: 0.6rem;
+  }
+  
+  header#intro #main h1 {
+    letter-spacing: 1px;
+  }
+}
+/* Main ad container */
+#ad {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
 }
 
-#red-circle{
-  display: block;
-  width:1.6rem;
-  height:1.6rem;
-  border-radius:50%;
-  background: #F0E7D5;
-  position:relative;
-  align-self: right;
-  left:3rem;
+/* Ad text section */
+#ad #ad-text {
+  text-align: left;
 }
 
-
-
-#ad-image{
-  width:80rem;
-  max-width: 100%;
-  position: relative;
-  right:0;
-  border-radius:1rem;
-  margin-left :0;
-  transform: rotate(-15deg);
-  -webkit-mask-image: radial-gradient(circle, black 60%, transparent 100%);
-  mask-image: radial-gradient(circle, black 60%, transparent 100%);
+/* Ad heading */
+#ad #ad-text h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(90deg, #1e293b 0%, #E0B840 50%, #1e293b 100%);
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
+/* Image detail wrapper */
+#ad #image-detail {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-direction: row;
+}
 
+/* Mini card with quote */
+#ad #image-detail #mini-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 320px;
+  border-left: 4px solid #E0B840;
+}
+
+/* Quote text */
+#ad #image-detail #mini-card p {
+  font-size: 1rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+  font-style: italic;
+}
+
+/* Red circle decoration */
+#ad #image-detail #mini-card #red-circle {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #FF0000 0%, #FF6B6B 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
+  margin: 0;
+}
+
+/* Ad image */
+#ad #image-detail #ad-image {
+  width: 280px;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#ad #image-detail #ad-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* Animated shine effect */
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  #ad {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+  }
+  
+  #ad #ad-text {
+    text-align: center;
+  }
+  
+  #ad #ad-text h1 {
+    font-size: 2rem;
+  }
+  
+  #ad #image-detail {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #ad #image-detail #mini-card {
+    max-width: 100%;
+  }
+  
+  #ad #image-detail #ad-image {
+    width: 240px;
+    height: 240px;
+  }
+}
+
+@media (max-width: 640px) {
+  #ad #ad-text h1 {
+    font-size: 1.5rem;
+  }
+  
+  #ad #image-detail #ad-image {
+    width: 200px;
+    height: 200px;
+  }
+  
+  #ad #image-detail #mini-card #red-circle {
+    width: 32px;
+    height: 32px;
+  }
+}
  #circle {
   display: block;
   background: #C4BCB0;
@@ -136,6 +261,11 @@ i{
   border:1px solid blue;
   align-content: center;
   justify-self :center;
+  box-shadow: 
+    0 0 10px #000000,
+    0 0 20px #C4BCB0,
+    0 0 40px #C4BCB0,
+    0 0 80px #C4BCB0;
 }
 
 #inner-circle{
@@ -365,4 +495,93 @@ mark {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin: 14px 0 6px;
+}
+
+
+
+/* Main footer container */
+footer#footer {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #fff;
+  padding: 3rem 2rem 1rem;
+  margin-top: 3rem;
+}
+
+/* Footer content wrapper */
+footer#footer .footer-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Footer sections */
+footer#footer .footer-section {
+  text-align: left;
+}
+
+/* Footer headings */
+footer#footer .footer-section h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0 0 1rem 0;
+  color: #E0B840;
+}
+
+footer#footer .footer-section h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #fff;
+}
+
+footer#footer {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #fff;
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+footer#footer p {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin: 0;
+  background: linear-gradient(90deg, #E0B840 0%, #39FF14 50%, #E0B840 100%);
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+footer#footer .footer-glow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #E0B840 0%, #39FF14 50%, #E0B840 100%);
+  box-shadow: 0 0 20px #E0B840, 0 0 40px #39FF14;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px #E0B840, 0 0 40px #39FF14;
+  }
+  50% {
+    box-shadow: 0 0 30px #E0B840, 0 0 60px #39FF14;
+  }
 }
