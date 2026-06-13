@@ -319,6 +319,7 @@ header#intro::before {
 .container {
   max-width: 720px;
   margin: 0 auto;
+  margin-top :3rem;
 }
 
 h1 {

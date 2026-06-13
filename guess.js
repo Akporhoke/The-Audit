@@ -13,20 +13,32 @@ cancelBtn.addEventListener('click', () => {
 sub.addEventListener('click', () => {
     gScoreBCss.style.display = 'block';
     body.style.display = 'none';
-    console.log(body);
 });
 
 
-const decreaseBtn = document.getElementById('decreasebtn');
-const increaseBtn = document.getElementById('increasebtn');
-const numberDisplay = document.getElementById('numberdisplay');
+let currentNumber = -1;
+const min = 0;
+const max = 10;
+
+const numberDisplay = document.getElementById('numberDisplay');
+const decreaseBtn = document.getElementById('decreaseBtn');
+const increaseBtn = document.getElementById('increaseBtn');
+
+function updateDisplay() {
+    numberDisplay.textContent = currentNumber;
+}
 
 decreaseBtn.addEventListener('click', () => {
-    let currentValue = parseInt(numberDisplay.textContent, 10);
-    numberDisplay.textContent = currentValue - 1;
+    if (currentNumber > min) {
+        currentNumber--;
+        updateDisplay();
+    }
 });
 
 increaseBtn.addEventListener('click', () => {
-    let currentValue = parseInt(numberDisplay.textContent, 10);
-    numberDisplay.textContent = currentValue + 1;
+    if (currentNumber < max) {
+        currentNumber++;
+        updateDisplay();
+    }
 });
+
