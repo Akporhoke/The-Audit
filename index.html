@@ -5,14 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AUDIT</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="guess.css">
   <link rel="stylesheet" href="eastern-egg.css.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
+  
+<div id="G-scoreB">
+  <span id="cancel-btn">✕</span>
+  <div  id="G-score">
+    <h1> GUESS</h1>
+<div class="selector-container">
+  <button class="arrow-btn" id="decrement-btn">-</button>
+  <div class="number-display" id="counter-value">0</div>
+  <button class="arrow-btn" id="increment-btn">+</button>
+</div>
+  </div> 
+
+</div>
+<div id="body">
+ 
+
 
   <header id="intro">
-    <div id="main"><i class="fa-solid fa-magnifying-glass-dollar"></i><h1>THE AUDIT</h1></div>
+    <div id="main"><i class="fa-solid fa-magnifying-glass-dollar"></i>
+      <h1>THE AUDIT</h1></div>
+     
   </header>
+
+   <div id="sub">
+        <strong>GUESS YOUR FINANCIAL SCORE</strong>
+      </div>
 
   <div id="ad">
     <div id="ad-text">
@@ -75,10 +98,11 @@
 
   <script src="categorizer.js"></script>
   <script src="category-breakdown.js"></script>
-  <script src="easter-egg.js" charset="utf-8">
-    
-  </script>
+  <script src="easter-egg.js" charset="utf-8"> </script>
+      <script src="guess.js" charset="utf-8"></script>
+  
   <script src="https://kit.fontawesome.com/ebc2dac530.js" crossorigin="anonymous"></script>
   <script src="search.js"></script>
+</div>
 </body>
 </html>
