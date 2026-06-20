@@ -213,3 +213,39 @@ body{
 #prediction {
   transition: opacity 1s ease;
 }
+
+
+#questionnaire{
+    position: relative;
+  z-index: 10;                  /* Ensures it's above content but not overlapping wrongly */
+  display: none;
+  height:8rem;
+  margin: 30px auto 0;
+  background: #fff;
+  background-size: 300% 300%;
+  color: Black;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 16px 48px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  animation: gradientMove 3.8s ease infinite;
+  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: transform 0.25s ease;
+}
+
+
+
+#timer {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: red;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 50%;
+  font-size: 12px;
+}

@@ -21,13 +21,20 @@ function extractNumber(snippet, keyword) {
     const num = parseFloat(totalMatch[1].replace(/,/g, ''));
     if (!isNaN(num)) return num;
   }
+
   const directPattern = new RegExp(keyword + 's?\\s+([\\d,]+\\.\\d{2})', 'i');
   const directMatch = snippet.match(directPattern);
   if (directMatch) {
     const num = parseFloat(directMatch[1].replace(/,/g, ''));
     if (!isNaN(num)) return num;
   }
-  const found = snippet.match(/\d{1,3}(?:,\d{3})*\.\d{2}/g);
+
+  // ── Fallback: only look at text AFTER the keyword, not the whole snippet ──
+  const keyIdx     = snippet.toLowerCase().indexOf(keyword.toLowerCase());
+  const searchFrom = keyIdx >= 0 ? keyIdx + keyword.length : 0;
+  const afterKeyword = snippet.slice(searchFrom);
+
+  const found = afterKeyword.match(/\d{1,3}(?:,\d{3})*\.\d{2}/g);
   if (!found) return null;
   const numbers = found.map(n => parseFloat(n.replace(/,/g, ''))).filter(n => !isNaN(n));
   return numbers.length ? numbers[0] : null;
@@ -133,7 +140,7 @@ async function processPDF(arrayBuffer, statusEl, summaryEl, resultsEl, password 
   renderCategoryBreakdown(rawPageTexts);
 
   const fullText    = rawPageTexts.join('\n');
-  const { summary } = window.categoriseStatement(fullText);
+  const { summary, accounts } = window.categoriseStatement(fullText);
 
   const airtimeAmount = getCategoryAmount(summary, 'Airtime & Data');
   const transfersOut  = getCategoryAmount(summary, 'Transfers Out');
@@ -142,6 +149,47 @@ async function processPDF(arrayBuffer, statusEl, summaryEl, resultsEl, password 
   const fees          = getCategoryAmount(summary, 'Fees & Charges');
 
   window.categoryAmounts = { airtimeAmount, transfersOut, transfersIn, savings, fees };
+// ── ADD THIS to scanner.js, right after the existing line:
+//      window.categoryAmounts = { airtimeAmount, transfersOut, transfersIn, savings, fees };
+//
+// This exposes each account's OWN category amounts separately, scaled
+// against that account's OWN printed totals (no longer borrowing the
+// global window.financialTotals, which only ever reflected whichever
+// account happened to be found first in the document).
+
+function scaledCategoryAmount(summary, accountTotalDebit, accountTotalCredit, name) {
+  const cat = summary.find(c => c.name === name);
+  if (!cat) return { debit: 0, credit: 0 };
+
+  const parsedOut = summary.reduce((s, c) => s + c.totalDebit,  0);
+  const parsedIn  = summary.reduce((s, c) => s + c.totalCredit, 0);
+
+  const scaleOut = (accountTotalDebit  && parsedOut > 0) ? accountTotalDebit  / parsedOut : 1;
+  const scaleIn  = (accountTotalCredit && parsedIn  > 0) ? accountTotalCredit / parsedIn  : 1;
+
+  return { debit: cat.totalDebit * scaleOut, credit: cat.totalCredit * scaleIn };
+}
+
+window.accountsBreakdown = (accounts || []).map(acc => {
+  const airtime   = scaledCategoryAmount(acc.summary, acc.totalDebit, acc.totalCredit, 'Airtime & Data');
+  const transOut  = scaledCategoryAmount(acc.summary, acc.totalDebit, acc.totalCredit, 'Transfers Out');
+  const transIn   = scaledCategoryAmount(acc.summary, acc.totalDebit, acc.totalCredit, 'Transfers In');
+  const savingsC  = scaledCategoryAmount(acc.summary, acc.totalDebit, acc.totalCredit, 'Savings / Investment');
+  const feesC     = scaledCategoryAmount(acc.summary, acc.totalDebit, acc.totalCredit, 'Fees & Charges');
+
+  return {
+    name:          acc.name,
+    totalCredit:   acc.totalCredit,
+    totalDebit:    acc.totalDebit,
+    airtimeAmount: airtime.debit,
+    transfersOut:  transOut.debit,
+    transfersIn:   transIn.credit,
+    savings:       savingsC.debit,
+    fees:          feesC.debit,
+  };
+});
+
+
 
   const totalIn  = financialTotals.credit?.amount;
   const totalOut = financialTotals.expense?.amount;
@@ -168,6 +216,7 @@ async function processPDF(arrayBuffer, statusEl, summaryEl, resultsEl, password 
   }
 
   displayResults(statusEl, summaryEl, resultsEl);
+  if (window.showBudgetFloat) window.showBudgetFloat();
 }
 
 // ── Main scan function ────────────────────────────────────────────────────

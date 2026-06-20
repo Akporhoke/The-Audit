@@ -3,90 +3,107 @@ window.renderCategoryBreakdown = function(rawPageTexts) {
   if (!container) return;
 
   const fullText = rawPageTexts.join('\n');
-  const { transactions, summary } = window.categoriseStatement(fullText);
+  const { accounts, transactions } = window.categoriseStatement(fullText);
 
   if (transactions.length === 0) {
     container.innerHTML = '<p style="color:#94A3B8;text-align:center">No transactions parsed.</p>';
     return;
   }
 
-  // ── Ground truth totals from the PDF summary line (scanner.js) ──────────
-  // These are the real totals from the statement header — always accurate.
-  const trueTotalOut = window.financialTotals?.expense?.amount ?? null;
-  const trueTotalIn  = window.financialTotals?.credit?.amount  ?? null;
+  let html = '';
 
-  // ── Parsed totals from categorizer ───────────────────────────────────────
-  const parsedTotalOut = summary.reduce((s, c) => s + c.totalDebit,  0);
-  const parsedTotalIn  = summary.reduce((s, c) => s + c.totalCredit, 0);
+  for (const account of accounts) {
+    const { name, totalCredit, totalDebit, summary, mismatch } = account;
 
-  // ── Scale factor: stretch parsed category amounts to match true totals ───
-  const scaleOut = (trueTotalOut && parsedTotalOut > 0) ? trueTotalOut / parsedTotalOut : 1;
-  const scaleIn  = (trueTotalIn  && parsedTotalIn  > 0) ? trueTotalIn  / parsedTotalIn  : 1;
+    // ── Raw parsed totals — NO scaling. What you see is exactly what was parsed. ──
+    const parsedTotalOut = summary.reduce((s, c) => s + c.totalDebit,  0);
+    const parsedTotalIn  = summary.reduce((s, c) => s + c.totalCredit, 0);
 
-  // ── Use true totals for display if available, else parsed ────────────────
-  const grandDebit  = trueTotalOut ?? parsedTotalOut;
-  const grandCredit = trueTotalIn  ?? parsedTotalIn;
+    // ── Mismatch warning banner ───────────────────────────────────────────
+    let warningHtml = '';
+    if (mismatch && mismatch.hasMismatch) {
+      const lines = [];
+      if (mismatch.creditCountExpected != null && mismatch.creditCountExpected !== mismatch.creditCountParsed) {
+        lines.push(`Expected ${mismatch.creditCountExpected} credit txns, found ${mismatch.creditCountParsed}`);
+      }
+      if (mismatch.debitCountExpected != null && mismatch.debitCountExpected !== mismatch.debitCountParsed) {
+        lines.push(`Expected ${mismatch.debitCountExpected} debit txns, found ${mismatch.debitCountParsed}`);
+      }
+      if (mismatch.totalCreditExpected != null && Math.abs(mismatch.totalCreditExpected - mismatch.totalCreditParsed) > 0.01) {
+        lines.push(`Credit total off by ₦${window.txFmt(Math.abs(mismatch.totalCreditExpected - mismatch.totalCreditParsed))}`);
+      }
+      if (mismatch.totalDebitExpected != null && Math.abs(mismatch.totalDebitExpected - mismatch.totalDebitParsed) > 0.01) {
+        lines.push(`Debit total off by ₦${window.txFmt(Math.abs(mismatch.totalDebitExpected - mismatch.totalDebitParsed))}`);
+      }
+      warningHtml = `
+        <div class="cb-warning">
+          <span class="cb-warning-icon">⚠️</span>
+          <div class="cb-warning-text">
+            <strong>Some transactions may be missing or mis-parsed</strong>
+            <ul>${lines.map(l => `<li>${l}</li>`).join('')}</ul>
+          </div>
+        </div>`;
+    }
 
-  let html = `
-    <div class="cb-header">
-      <h3 class="cb-title">Spending Breakdown</h3>
-      <div class="cb-grand">
-        <span class="cb-grand-item cb-debit">Total Out <strong>₦${window.txFmt(grandDebit)}</strong></span>
-        <span class="cb-grand-item cb-credit">Total In <strong>₦${window.txFmt(grandCredit)}</strong></span>
-      </div>
-    </div>
-    <div class="cb-list">
-  `;
-
-  for (const cat of summary) {
-    const catMeta = window.TX_CATEGORIES.find(c => c.name === cat.name) || { color: '#94A3B8' };
-
-    // Scale this category's amounts to match real totals
-    const scaledDebit  = cat.totalDebit  * scaleOut;
-    const scaledCredit = cat.totalCredit * scaleIn;
-
-    const barPct = grandDebit > 0 ? Math.min((scaledDebit / grandDebit) * 100, 100) : 0;
-
-    // Scale individual transaction amounts too
-    const scaledItems = cat.items.map(tx => ({
-      ...tx,
-      debit:  tx.debit  * scaleOut,
-      credit: tx.credit * scaleIn,
-    }));
+    // Use the document's printed total for the header display if available
+    // (that's the trustworthy ground truth), but the category rows below
+    // always show RAW parsed amounts, not scaled to match it.
+    const grandDebit  = totalDebit  ?? parsedTotalOut;
+    const grandCredit = totalCredit ?? parsedTotalIn;
 
     html += `
-      <div class="cb-row" data-category="${cat.name}">
-        <div class="cb-row-top">
-          <span class="cb-dot" style="background:${catMeta.color}"></span>
-          <span class="cb-name">${cat.name}</span>
-          <span class="cb-count">${cat.count} txn${cat.count !== 1 ? 's' : ''}</span>
-          ${scaledDebit  > 0 ? `<span class="cb-amount-out">−₦${window.txFmt(scaledDebit)}</span>`  : ''}
-          ${scaledCredit > 0 ? `<span class="cb-amount-in">+₦${window.txFmt(scaledCredit)}</span>` : ''}
+      <div class="cb-account">
+        <div class="cb-header">
+          <h3 class="cb-title">${name}</h3>
+          <div class="cb-grand">
+            <span class="cb-grand-item cb-debit">Total Out <strong>₦${window.txFmt(grandDebit)}</strong></span>
+            <span class="cb-grand-item cb-credit">Total In <strong>₦${window.txFmt(grandCredit)}</strong></span>
+          </div>
         </div>
-        <div class="cb-bar-track">
-          <div class="cb-bar-fill" style="width:${barPct.toFixed(1)}%;background:${catMeta.color}"></div>
-        </div>
-        <div class="cb-items" id="cb-items-${cat.name.replace(/[\s/]+/g,'-')}">
-          ${scaledItems.map(tx => `
-            <div class="cb-item">
-              <span class="cb-item-desc">${tx.description}</span>
-              <span class="cb-item-nums">
-                ${tx.debit  > 0 ? `<span class="cb-item-debit">−₦${window.txFmt(tx.debit)}</span>`  : ''}
-                ${tx.credit > 0 ? `<span class="cb-item-credit">+₦${window.txFmt(tx.credit)}</span>` : ''}
-              </span>
-            </div>
-          `).join('')}
-        </div>
-      </div>
+        ${warningHtml}
+        <div class="cb-list">
     `;
+
+    for (const cat of summary) {
+      const catMeta = window.TX_CATEGORIES.find(c => c.name === cat.name) || { color: '#94A3B8' };
+      const barPct = grandDebit > 0 ? Math.min((cat.totalDebit / grandDebit) * 100, 100) : 0;
+      const safeKey = `${name}-${cat.name}`.replace(/[\s/]+/g, '-');
+
+      html += `
+        <div class="cb-row" data-key="${safeKey}">
+          <div class="cb-row-top">
+            <span class="cb-dot" style="background:${catMeta.color}"></span>
+            <span class="cb-name">${cat.name}</span>
+            <span class="cb-count">${cat.count} txn${cat.count !== 1 ? 's' : ''}</span>
+            ${cat.totalDebit  > 0 ? `<span class="cb-amount-out">−₦${window.txFmt(cat.totalDebit)}</span>`  : ''}
+            ${cat.totalCredit > 0 ? `<span class="cb-amount-in">+₦${window.txFmt(cat.totalCredit)}</span>` : ''}
+          </div>
+          <div class="cb-bar-track">
+            <div class="cb-bar-fill" style="width:${barPct.toFixed(1)}%;background:${catMeta.color}"></div>
+          </div>
+          <div class="cb-items" id="cb-items-${safeKey}">
+            ${cat.items.map(tx => `
+              <div class="cb-item">
+                <span class="cb-item-desc">${tx.description}</span>
+                <span class="cb-item-nums">
+                  ${tx.debit  > 0 ? `<span class="cb-item-debit">−₦${window.txFmt(tx.debit)}</span>`  : ''}
+                  ${tx.credit > 0 ? `<span class="cb-item-credit">+₦${window.txFmt(tx.credit)}</span>` : ''}
+                </span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    html += `</div></div>`;
   }
 
-  html += `</div>`;
   container.innerHTML = html;
 
   container.querySelectorAll('.cb-row').forEach(row => {
     row.addEventListener('click', () => {
-      const key   = row.dataset.category.replace(/[\s/]+/g, '-');
+      const key   = row.dataset.key;
       const items = document.getElementById(`cb-items-${key}`);
       if (items) items.classList.toggle('cb-items-open');
     });
@@ -100,6 +117,13 @@ window.renderCategoryBreakdown = function(rawPageTexts) {
   style.id = 'cb-styles';
   style.textContent = `
     #categoryBreakdown { margin-top: 24px; font-family: inherit; }
+
+    .cb-account { margin-bottom: 28px; }
+    .cb-account + .cb-account {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding-top: 24px;
+    }
+
     .cb-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
     .cb-title  { font-size:1rem; font-weight:700; color:#E2E8F0; margin:0; }
     .cb-grand  { display:flex; gap:12px; flex-wrap:wrap; }
@@ -107,6 +131,23 @@ window.renderCategoryBreakdown = function(rawPageTexts) {
     .cb-grand-item strong { font-weight:700; }
     .cb-debit strong  { color:#EF4444; }
     .cb-credit strong { color:#22C55E; }
+
+    .cb-warning {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+    }
+    .cb-warning-icon { font-size: 1rem; flex-shrink: 0; }
+    .cb-warning-text { font-size: 0.78rem; color: #FBBF24; }
+    .cb-warning-text strong { display: block; margin-bottom: 4px; color: #FCD34D; }
+    .cb-warning-text ul { margin: 0; padding-left: 16px; color: #FBBF24; }
+    .cb-warning-text li { margin-bottom: 2px; }
+
     .cb-list { display:flex; flex-direction:column; gap:10px; }
     .cb-row { background:rgba(255,255,255,0.04); border-radius:10px; padding:10px 12px; cursor:pointer; transition:background 0.15s; }
     .cb-row:hover { background:rgba(255,255,255,0.08); }
@@ -116,8 +157,10 @@ window.renderCategoryBreakdown = function(rawPageTexts) {
     .cb-count { font-size:0.7rem; color:#64748B; }
     .cb-amount-out { font-size:0.82rem; font-weight:700; color:#EF4444; margin-left:auto; }
     .cb-amount-in  { font-size:0.82rem; font-weight:700; color:#22C55E; }
+
     .cb-bar-track { height:4px; background:rgba(255,255,255,0.08); border-radius:2px; margin-top:8px; overflow:hidden; }
     .cb-bar-fill  { height:100%; border-radius:2px; transition:width 0.4s ease; }
+
     .cb-items { display:none; flex-direction:column; gap:4px; margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06); }
     .cb-items-open { display:flex; }
     .cb-item { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; font-size:0.72rem; color:#94A3B8; padding:3px 0; }
