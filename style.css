@@ -552,3 +552,145 @@ footer#footer .footer-glow {
     box-shadow: 0 0 30px #E0B840, 0 0 60px #39FF14;
   }
 }
+
+/* ============ NEW: Content sections styling (How It Works / What We Measure / FAQ) ============ */
+
+.content-block {
+  max-width: 720px;
+  margin: 2.5rem auto;
+  padding: 1.75rem 1.5rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #E0B840;
+}
+
+.content-block h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(90deg, #1e293b 0%, #E0B840 50%, #1e293b 100%);
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.content-block p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #6b5847;
+  margin: 0 0 0.75rem 0;
+}
+
+.content-block ol,
+.content-block ul {
+  margin: 0.5rem 0 0.5rem 0;
+  padding-left: 1.3rem;
+}
+
+.content-block ol li,
+.content-block ul li {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: #6b5847;
+  margin-bottom: 0.6rem;
+}
+
+.content-block ol li strong,
+.content-block ul li strong {
+  color: #1e293b;
+}
+
+/* How It Works numbered steps get a little badge look */
+#how-it-works ol {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: step;
+}
+
+#how-it-works ol li {
+  position: relative;
+  padding-left: 2.4rem;
+  counter-increment: step;
+}
+
+#how-it-works ol li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 1.8rem;
+  height: 1.8rem;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #E0B840;
+  font-weight: 800;
+  font-size: 0.85rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* What We Measure list gets a small gold dot instead of bullets */
+#what-we-measure ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+#what-we-measure ul li {
+  position: relative;
+  padding-left: 1.4rem;
+}
+
+#what-we-measure ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E0B840 0%, #c99a2e 100%);
+}
+
+/* FAQ accordion-style cards */
+#faq .faq-item {
+  background: #FFFFF0;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 0.9rem;
+  border: 1px solid #ecdfc9;
+}
+
+#faq .faq-item:last-child {
+  margin-bottom: 0;
+}
+
+#faq h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.4rem 0;
+}
+
+#faq .faq-item p {
+  font-size: 0.88rem;
+  color: #6b5847;
+  margin: 0;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .content-block {
+    margin: 1.75rem auto;
+    padding: 1.4rem 1.1rem;
+  }
+
+  .content-block h2 {
+    font-size: 1.2rem;
+  }
+}
