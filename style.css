@@ -694,3 +694,32 @@ footer#footer .footer-glow {
     font-size: 1.2rem;
   }
 }
+
+/* Categories explainer + Why it matters + Sample breakdown — reuse gold dot bullets */
+#categories-explainer ul,
+#sample-breakdown ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+#categories-explainer ul li,
+#sample-breakdown ul li {
+  position: relative;
+  padding-left: 1.4rem;
+}
+
+#categories-explainer ul li::before,
+#sample-breakdown ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E0B840 0%, #c99a2e 100%);
+}
+
+#sample-breakdown p strong {
+  color: #1e293b;
+}

@@ -1,15 +1,20 @@
 // ── Transaction Categories ────────────────────────────────────────────────
 window.TX_CATEGORIES = [
-  { name: 'Airtime & Data',        color: '#F97316', keywords: ['airtime', 'data sub', 'mtn', 'glo ', 'airtel', '9mobile'] },
-  { name: 'Savings / Investment',  color: '#6366F1', keywords: ['auto-save', 'owealth', 'contribution', 'ppl,', 'savings', 'mpt|sav'] },
-  { name: 'Transfers In',          color: '#22C55E', keywords: ['transfer from', 'trf from', 'cba_credit', 'inflow', 'received from'] },
-  { name: 'Transfers Out',         color: '#EF4444', keywords: ['transfer to', 'trf to', 'trf|2mpt'] },
-  { name: 'Withdrawals',           color: '#EC4899', keywords: ['withdrawal', 'cash out'] },
-  { name: 'Interest',              color: '#14B8A6', keywords: ['interest_credit', 'interest'] },
-  { name: 'Rewards / Cashback',    color: '#FBBF24', keywords: ['cb_csh_out', 'rewards cashout', 'cashback'] },
-  { name: 'Fees & Charges',        color: '#A855F7', keywords: ['ussd_charge', 'ussd charge', 'sms alert', 'value added tax', 'kcas_sms', 'vat'] },
-  { name: 'Other',                 color: '#94A3B8', keywords: [] },
+  { name: 'Airtime & Data',        color: '#F97316', keywords: ['airtime', 'data sub', 'mtn', 'glo ', 'airtel', '9mobile'], description: 'Spending on mobile airtime and data bundles.' },
+  { name: 'Savings / Investment',  color: '#6366F1', keywords: ['auto-save', 'owealth', 'contribution', 'ppl,', 'savings', 'mpt|sav'], description: 'Money moved into savings or investment vehicles.' },
+  { name: 'Transfers In',          color: '#22C55E', keywords: ['transfer from', 'trf from', 'cba_credit', 'inflow', 'received from'], description: 'Money received from other accounts or people.' },
+  { name: 'Transfers Out',         color: '#EF4444', keywords: ['transfer to', 'trf to', 'trf|2mpt'], description: 'Funds sent out to other accounts or people.' },
+  { name: 'Withdrawals',           color: '#EC4899', keywords: ['withdrawal', 'cash out'], description: 'Cash withdrawn from the account.' },
+  { name: 'Interest',              color: '#14B8A6', keywords: ['interest_credit', 'interest'], description: 'Interest earned on balances or savings.' },
+  { name: 'Rewards / Cashback',    color: '#FBBF24', keywords: ['cb_csh_out', 'rewards cashout', 'cashback'], description: 'Cashback or reward payouts received.' },
+  { name: 'Fees & Charges',        color: '#A855F7', keywords: ['ussd_charge', 'ussd charge', 'sms alert', 'value added tax', 'kcas_sms', 'vat'], description: 'Bank charges, levies, and transaction fees.' },
+  { name: 'Other',                 color: '#94A3B8', keywords: [], description: "Transactions that don't fit a specific category." },
 ];
+
+window.getCategoryDescription = function(categoryName) {
+  const cat = window.TX_CATEGORIES.find(c => c.name === categoryName);
+  return cat ? cat.description : '';
+};
 
 // Reference codes like "MFDS...#/PERSON NAME:0801234567/#...CREDIT_0" are
 // genuine person-to-person transfers, but never contain the word "transfer"
@@ -69,9 +74,6 @@ window.splitAccountSections = function(rawText) {
   const headers  = [...rawText.matchAll(headerRe)].map(m => m.index);
 
   if (headers.length === 0) {
-    // Try OPay-style summary first, then Moniepoint-style as a second
-    // attempt. Whichever matches gives us the ground-truth totals to
-    // compare parsed transactions against.
     const opayMeta  = findSummaryBefore(rawText, rawText.length);
     const monieMeta = !opayMeta ? findMoniepointSummary(rawText) : null;
     const meta = opayMeta || monieMeta;
@@ -80,7 +82,7 @@ window.splitAccountSections = function(rawText) {
       name:        meta?.accountName || 'Account',
       totalCredit: meta?.totalCredit ?? null,
       totalDebit:  meta?.totalDebit  ?? null,
-      creditCount: meta?.creditCount ?? null, // Moniepoint prints no counts
+      creditCount: meta?.creditCount ?? null,
       debitCount:  meta?.debitCount  ?? null,
       text:        rawText,
     }];
@@ -103,23 +105,16 @@ window.splitAccountSections = function(rawText) {
 const MONTHS = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
 
 // ── PRIMARY parser: match a COMPLETE row in one shot ──────────────────────
-// Pattern: TransDate TransTime ValueDate Description Debit Credit Balance
-// Channel — all captured together. Because the match requires the FULL
-// row shape (including the trailing channel keyword as an anchor), it
-// naturally skips over header text, summary blocks, and page-break noise
-// without ever needing them stripped out first. There's nothing to
-// accidentally merge or split across, since every match is self-contained
-// and independently verified against the real row shape.
 function parseOpayRows(rawText) {
   const rowRe = new RegExp(
-    `(\\d{1,2}\\s+${MONTHS}\\s+\\d{4})\\s+` +   // trans date
-    `(\\d{2}:\\d{2}:\\d{2})\\s+` +              // trans time
-    `(\\d{1,2}\\s+${MONTHS}\\s+\\d{4})\\s+` +   // value date
-    `(.+?)\\s+` +                               // description (lazy)
-    `(--|[\\d,]+\\.\\d{2})\\s+` +                // debit
-    `(--|[\\d,]+\\.\\d{2})\\s+` +                // credit
-    `([\\d,]+\\.\\d{2})\\s+` +                   // balance after
-    `(Mobile|Web|POS|USSD|Agent|Internet|Branch)\\b`, // channel
+    `(\\d{1,2}\\s+${MONTHS}\\s+\\d{4})\\s+` +
+    `(\\d{2}:\\d{2}:\\d{2})\\s+` +
+    `(\\d{1,2}\\s+${MONTHS}\\s+\\d{4})\\s+` +
+    `(.+?)\\s+` +
+    `(--|[\\d,]+\\.\\d{2})\\s+` +
+    `(--|[\\d,]+\\.\\d{2})\\s+` +
+    `([\\d,]+\\.\\d{2})\\s+` +
+    `(Mobile|Web|POS|USSD|Agent|Internet|Branch)\\b`,
     'gi'
   );
 
@@ -133,7 +128,7 @@ function parseOpayRows(rawText) {
 
     let debit = 0, credit = 0;
     if (debitRaw === '--' && creditRaw === '--') {
-      continue; // malformed row, skip
+      continue;
     } else if (debitRaw === '--') {
       credit = parseFloat(creditRaw.replace(/,/g, ''));
     } else if (creditRaw === '--') {
@@ -212,13 +207,6 @@ function parseGenericRows(rawText) {
 }
 
 // ── Moniepoint parser: anchor on the reference suffix, not the date ─────────
-// Every Moniepoint row ends with a guaranteed "_CREDIT_N" or "_DEBIT_N"
-// marker immediately followed by its debit, credit, and balance numbers.
-// That marker is far more reliable than the date stamp: we've seen cases
-// where pdf.js extracts a row's minute:second out of order, splitting it
-// away from its own hour and landing it AFTER the description instead of
-// right after the date. Anchoring on the suffix means a broken date can
-// no longer cause two transactions' numbers to merge into one block.
 function parseMoniepointRows(rawText) {
   const cleanText = rawText
     .replace(/Account\s+Statement\s+Account\s+Summary[\s\S]*?(?=\d{4}-\d{2}-\d{2}T)/i, '')
@@ -286,6 +274,35 @@ window.txSummarise = function(transactions) {
 
 window.txFmt = function(n) {
   return (n || 0).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+// ── NEW: natural-language account summary ─────────────────────────────────
+// Builds a few sentences of real, data-driven prose from an account's
+// totals and category summary — gives the results page actual readable
+// content instead of just numbers and bars.
+window.generateAccountSummary = function(account) {
+  const totalIn  = account.totalCredit ?? account.summary.reduce((s, c) => s + c.totalCredit, 0);
+  const totalOut = account.totalDebit  ?? account.summary.reduce((s, c) => s + c.totalDebit,  0);
+
+  if (!totalIn || totalIn <= 0) return '';
+
+  const savingsRate = (((totalIn - totalOut) / totalIn) * 100).toFixed(1);
+
+  const spendCategories = account.summary.filter(c => c.totalDebit > 0);
+  if (spendCategories.length === 0) return '';
+
+  const top = spendCategories.reduce((a, b) => (b.totalDebit > a.totalDebit ? b : a));
+  const topPercent = ((top.totalDebit / totalOut) * 100).toFixed(0);
+
+  const savingsLabel =
+    savingsRate >= 20 ? 'a strong' :
+    savingsRate >= 5  ? 'a modest' :
+    savingsRate >= 0  ? 'a thin' : 'a negative';
+
+  return `On the ${account.name}, you brought in ₦${window.txFmt(totalIn)} and spent ₦${window.txFmt(totalOut)}, `
+    + `leaving ${savingsLabel} savings rate of ${savingsRate}%. The largest share of spending went to `
+    + `${top.name.toLowerCase()} (${window.getCategoryDescription(top.name).toLowerCase()}), accounting for `
+    + `${topPercent}% of total outflow.`;
 };
 
 // ── Main entry point ────────────────────────────────────────────────────────
