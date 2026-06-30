@@ -604,6 +604,49 @@ footer#footer .footer-glow {
   color: #1e293b;
 }
 
+
+   /* Statement help link — sits under the upload box */
+    .statement-help{
+      display:block;
+      text-align:center;
+      margin-top:14px;
+      font-size:14px;
+      color:#9AA4B5;
+      text-decoration:none;
+    }
+    .statement-help:hover,
+    .statement-help:focus-visible{
+      color:#25A565;
+      text-decoration:underline;
+    }
+
+
+    /* Statement help link — sits under the upload box */
+    .statement-help{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      width:fit-content;
+      margin:16px auto 0;
+      padding:10px 18px;
+      background:rgba(37,165,101,0.12);
+      border:1px solid #25A565;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:700;
+      color:#25A565;
+      text-decoration:none;
+      transition:background .2s,transform .2s;
+    }
+    .statement-help:hover,
+    .statement-help:focus-visible{
+      background:#25A565;
+      color:#fff;
+      transform:translateY(-1px);
+    }
+
+
 /* How It Works numbered steps get a little badge look */
 #how-it-works ol {
   list-style: none;
